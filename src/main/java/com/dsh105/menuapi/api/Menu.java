@@ -18,8 +18,10 @@
 package com.dsh105.menuapi.api;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
@@ -28,7 +30,8 @@ import java.util.Map;
  * </p>
  * Click events and icon slots are handled internally by the Menu
  * </p>
- * An {@link com.dsh105.menuapi.api.Icon} represents an action to be performed when a certain item in the inventory is clicked
+ * An {@link com.dsh105.menuapi.api.Icon} represents an action to be performed when a certain item in the inventory is
+ * clicked
  */
 public interface Menu extends InventoryHolder, Listener {
 
@@ -79,6 +82,23 @@ public interface Menu extends InventoryHolder, Listener {
     public Icon getSlot(int slot);
 
     /**
+     * Gets the registered click item that opens a Menu when clicked by a player
+     *
+     * @return Click item registered to a Menu
+     */
+    public ItemStack getClickItem();
+
+    /**
+     * Sets the click item that opens a Menu when clicked by a player
+     * </p>
+     *
+     * @param clickItem Click item to register
+     * @see org.bukkit.inventory.ItemStack#isSimilar(org.bukkit.inventory.ItemStack) for method used to compare
+     * itemstack similarity for menu triggers
+     */
+    public void setClickItem(ItemStack clickItem);
+
+    /**
      * Shows a Menu to a player
      *
      * @param viewer Player to show the Menu to
@@ -91,5 +111,14 @@ public interface Menu extends InventoryHolder, Listener {
      * @param viewers Players to show the Menu to
      */
     public void show(Player... viewers);
+
+    /**
+     * Gets the event called when a Menu is opened
+     * </p>
+     * If this event is not specified, none will be called
+     *
+     * @return Event called when a Menu is opened
+     */
+    public Event getEventToCall();
 
 }

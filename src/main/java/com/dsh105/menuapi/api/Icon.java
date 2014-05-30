@@ -35,15 +35,22 @@ public class Icon {
     private ItemStack itemStack;
     private Material material;
     private short materialData;
+    private int amount;
     private String name;
     private String[] lore;
+
+    private boolean close = true;
+
+    protected Icon() {
+
+    }
 
     /**
      * Constructs an Icon for a Menu
      *
      * @param material Type of item
-     * @param name Name of item
-     * @param lore Item description
+     * @param name     Name of item
+     * @param lore     Item description
      */
     public Icon(Material material, String name, String... lore) {
         this(material, 1, (short) 0, name, lore);
@@ -53,9 +60,9 @@ public class Icon {
      * Constructs an Icon for a Menu
      *
      * @param material Type of item
-     * @param amount Amount of the item
-     * @param name Name of item
-     * @param lore Item description
+     * @param amount   Amount of the item
+     * @param name     Name of item
+     * @param lore     Item description
      */
     public Icon(Material material, int amount, String name, String... lore) {
         this(material, amount, (short) 0, name, lore);
@@ -64,11 +71,11 @@ public class Icon {
     /**
      * Constructs an Icon for a Menu
      *
-     * @param material Type of item
-     * @param amount Amount of the item
+     * @param material     Type of item
+     * @param amount       Amount of the item
      * @param materialData Item data
-     * @param name Name of item
-     * @param lore Item description
+     * @param name         Name of item
+     * @param lore         Item description
      */
     public Icon(Material material, int amount, short materialData, String name, String... lore) {
         this(buildItemStack(material, amount, materialData, name, lore));
@@ -81,6 +88,7 @@ public class Icon {
      */
     public Icon(ItemStack itemStack) {
         this.itemStack = itemStack;
+        this.amount = itemStack.getAmount();
         this.material = itemStack.getType();
         this.materialData = itemStack.getDurability();
         this.name = itemStack.getItemMeta().getDisplayName();
@@ -88,7 +96,7 @@ public class Icon {
         this.lore = lore.toArray(new String[lore.size()]);
     }
 
-    private static ItemStack buildItemStack(Material material, int amount, short materialData, String name, String... lore) {
+    public static ItemStack buildItemStack(Material material, int amount, short materialData, String name, String... lore) {
         ItemStack i = new ItemStack(material, amount, materialData);
         ItemMeta meta = i.getItemMeta();
         meta.setDisplayName(name);
@@ -115,6 +123,15 @@ public class Icon {
      */
     public short getMaterialData() {
         return materialData;
+    }
+
+    /**
+     * Gets the amount of an item shown in a Menu to represent an Icon
+     *
+     * @return Amount of an item shown to represent an Icon
+     */
+    public int getAmount() {
+        return amount;
     }
 
     /**
@@ -157,10 +174,20 @@ public class Icon {
 
     /**
      * Gets whether the {@link com.dsh105.menuapi.api.Menu} an Icon is added to will close when an Icon is clicked
-     * @return
+     *
+     * @return True if the Menu is to close, false if not
      */
     public boolean willClose() {
-        return true;
+        return close;
+    }
+
+    /**
+     * Sets whether the {@link com.dsh105.menuapi.api.Menu} an Icon is added to will close when an Icon is clicked
+     *
+     * @param close True if the Menu is to close, false if not
+     */
+    public void setClose(boolean close) {
+        this.close = close;
     }
 
     /**
