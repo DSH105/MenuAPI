@@ -17,6 +17,7 @@
 
 package com.dsh105.menuapi.api;
 
+import com.dsh105.menuapi.persistence.Layout;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
@@ -120,5 +121,12 @@ public interface Menu extends InventoryHolder, Listener {
      * @return Event called when a Menu is opened
      */
     public Event getEventToCall();
+
+    /**
+     * Converts a Menu to a {@link com.dsh105.menuapi.persistence.Layout} for saving and creating new Menus
+     *
+     * @return Layout representing a Menu
+     */
+    public Layout toLayout();
 
 }

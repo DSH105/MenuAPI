@@ -82,8 +82,30 @@ public class Layout {
         return this.slots.get(slot);
     }
 
-    public Menu createMenu(JavaPlugin plugin) {
+    public Menu toMenu(JavaPlugin plugin) {
         return new MenuImpl(plugin, this);
+    }
+
+    public Layout saveToFile(FileConfiguration config) {
+        return this.saveToFile(config, "");
+    }
+
+    public Layout saveToFile(FileConfiguration config, String sectionName) {
+        ConfigurationSection section = (sectionName == null || sectionName.isEmpty()) ? config : config.getConfigurationSection(sectionName);
+
+        section.set("size", getSize());
+        section.set("title", getTitle());
+
+        if (this.getClickItem() != null) {
+            this.saveItem(getClickItem(), section, "item.");
+        }
+
+        ConfigurationSection slotsSection = section.getConfigurationSection("slots");
+        for (int i = 1; i <= getSize(); i++) { // Account for people who don't know about '0' being the first. Use '1' instead
+            this.saveItem(getSlot(i - 1).getIcon(), slotsSection, "slot-" + i + ".");
+        }
+
+        return this;
     }
 
     public Layout loadFromFile(FileConfiguration config) {
@@ -93,8 +115,8 @@ public class Layout {
     public Layout loadFromFile(FileConfiguration config, String sectionName) {
         ConfigurationSection section = (sectionName == null || sectionName.isEmpty()) ? config : config.getConfigurationSection(sectionName);
 
-        Validate.notNull(section.get("size"), String.format(LOAD_FAIL_MESSAGE, section.getName(), "Inventory size not found!"));
-        Validate.notNull(section.get("title"), String.format(LOAD_FAIL_MESSAGE, section.getName(), "Menu name not found!"));
+        Validate.notNull(section.get("slots"), String.format(LOAD_FAIL_MESSAGE, "Inventory size not found!"));
+        Validate.notNull(section.get("title"), String.format(LOAD_FAIL_MESSAGE, "Menu name not found!"));
 
         title = section.getString("title", "Menu");
         size = section.getInt("slots", 45);
@@ -105,9 +127,25 @@ public class Layout {
         }
 
         ConfigurationSection slotsSection = section.getConfigurationSection("slots");
-        for (int i = 1; i <= size; i++) { // Account for people who don't know about '0' being the first. Use '1' instead
+        for (int i = 1; i <= getSize(); i++) { // Account for people who don't know about '0' being the first. Use '1' instead
             this.setSlot(i - 1, new Icon(this.loadItem(slotsSection, "slot-" + i + ".")));
         }
+
+        return this;
+    }
+
+    public Layout moveFileDataTo(FileConfiguration from, FileConfiguration to) {
+        return this.moveFileDataTo(from, "", to, "");
+    }
+
+    public Layout moveFileDataTo(FileConfiguration from, String fromSectionName, FileConfiguration to, String toSectionName) {
+        ConfigurationSection fromSection = (fromSectionName == null || fromSectionName.isEmpty()) ? from : from.getConfigurationSection(fromSectionName);
+
+        Validate.notNull(fromSection.get("size"), String.format(LOAD_FAIL_MESSAGE, "Inventory size not found!"));
+        Validate.notNull(fromSection.get("title"), String.format(LOAD_FAIL_MESSAGE, "Menu name not found!"));
+
+        this.loadFromFile(from, fromSectionName);
+        this.saveToFile(to, toSectionName);
 
         return this;
     }
@@ -124,8 +162,8 @@ public class Layout {
         Validate.notNull(rawLore, String.format(LOAD_FAIL_MESSAGE, "Click item config section located, but item lore was not found!"));
 
         String[] lore = new String[]{rawLore};
-        if (rawLore.contains("\\n")) {
-            lore = rawLore.split("\\n");
+        if (rawLore.contains("_l")) {
+            lore = rawLore.split("_l");
         }
 
         String[] loreCopy = new String[lore.length];
@@ -134,5 +172,18 @@ public class Layout {
         }
 
         return Icon.buildItemStack(material, amount, materialData, ChatColor.translateAlternateColorCodes('&', name), loreCopy);
+    }
+
+    private void saveItem(ItemStack toSave, ConfigurationSection configSection, String searchPrefix) {
+        configSection.set(searchPrefix + "name", toSave.getItemMeta().getDisplayName());
+        configSection.set(searchPrefix + "material", toSave.getType());
+        configSection.set(searchPrefix + "materialData", toSave.getDurability());
+        configSection.set(searchPrefix + "amount", toSave.getAmount());
+
+        StringBuilder builder = new StringBuilder();
+        for (String l : toSave.getItemMeta().getLore()) {
+            builder.append(l + (builder.length() == 0 ? "" : "_l"));
+        }
+        configSection.set(searchPrefix + "lore", builder.toString());
     }
 }

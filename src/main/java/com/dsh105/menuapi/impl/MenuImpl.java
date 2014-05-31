@@ -158,6 +158,11 @@ public class MenuImpl implements Menu {
         return null;
     }
 
+    @Override
+    public Layout toLayout() {
+        return new Layout(this.getSlots(), this.getSize(), this.getTitle(), this.getClickItem());
+    }
+
     @EventHandler
     public void onInvClick(InventoryClickEvent event) {
         HumanEntity human = event.getWhoClicked();
