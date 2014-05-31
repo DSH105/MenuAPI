@@ -94,7 +94,7 @@ public interface Menu extends InventoryHolder, Listener {
      * </p>
      *
      * @param clickItem Click item to register
-     * @see org.bukkit.inventory.ItemStack#isSimilar(org.bukkit.inventory.ItemStack) for method used to compare
+     * @see {@link org.bukkit.inventory.ItemStack#isSimilar(org.bukkit.inventory.ItemStack)} for method used to compare
      * itemstack similarity for menu triggers
      */
     public void setClickItem(ItemStack clickItem);
