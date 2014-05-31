@@ -17,13 +17,22 @@
 
 package com.dsh105.menuapi.api;
 
-import com.dsh105.menuapi.persistence.Layout;
+import com.dsh105.menuapi.util.MenuId;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -34,84 +43,105 @@ import java.util.Map;
  * An {@link com.dsh105.menuapi.api.Icon} represents an action to be performed when a certain item in the inventory is
  * clicked
  */
-public interface Menu extends InventoryHolder, Listener {
+public class Menu extends SlotHolder implements InventoryHolder, Listener {
+
+    private long id;
+
+    /**
+     * Construct a Menu with the given title and size
+     * </p>
+     * Menu sizes will be automatically adjusted to accommodate a multiple of nine
+     *
+     * @param plugin Plugin instance
+     * @param title  Title of the inventory
+     * @param size   Size of the inventory
+     */
+    public Menu(JavaPlugin plugin, String title, int size) {
+        this(plugin, title, size, new HashMap<Integer, Icon>());
+    }
+
+    /**
+     * Construct a Menu from a given {@link Layout}
+     *
+     * @param plugin Plugin instance
+     * @param layout Layout to construct the Menu from
+     */
+    public Menu(JavaPlugin plugin, Layout layout) {
+        this(plugin, layout.getTitle(), layout.getSize(), layout.getClickItem(), layout.getSlots());
+    }
+
+    /**
+     * Construct a new Menu
+     *
+     * @param plugin Plugin instance
+     * @param title  Title of the inventory
+     * @param size   Size of the inventory
+     * @param slots  Slots to initialise the Menu with
+     */
+    public Menu(JavaPlugin plugin, String title, int size, HashMap<Integer, Icon> slots) {
+        this(plugin, title, size, null, slots);
+    }
+
+    /**
+     * Construct a new Menu
+     *
+     * @param plugin    Plugin instance
+     * @param title     Title of the inventory
+     * @param size      Size of the inventory
+     * @param clickItem Click item registered to a Menu
+     * @param slots     Slots to initialise the Menu with
+     */
+    public Menu(JavaPlugin plugin, String title, int size, ItemStack clickItem, HashMap<Integer, Icon> slots) {
+        super(size, title, clickItem, slots);
+        this.id = MenuId.next();
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    }
+
+    @Override
+    public Inventory getInventory() {
+        return Bukkit.createInventory(this, this.getSize(), this.getTitle());
+    }
 
     /**
      * Gets the registered ID of a Menu
      *
      * @return Registered ID of a menu
      */
-    public long getId();
-
-    /**
-     * Gets the inventory size of a Menu
-     *
-     * @return Size of a menu
-     */
-    public int getSize();
-
-    /**
-     * Gets the inventory title of a Menu
-     *
-     * @return Title of a menu
-     */
-    public String getTitle();
-
-    /**
-     * Gets a map of {@link com.dsh105.menuapi.api.Icon} slots registered with a Menu
-     *
-     * @return Map of slot numbers to Icons representing the slots registered with a menu
-     * @see com.dsh105.menuapi.api.Icon for more information on adding Icons to a Menu
-     */
-    public Map<Integer, Icon> getSlots();
-
-    /**
-     * Registers an Icon to a certain slot in a menu
-     *
-     * @param slot Slot number to apply the Icon to
-     * @param icon Icon to apply to the slot
-     * @throws java.lang.IllegalArgumentException if the slot number does not exist
-     */
-    public void setSlot(int slot, Icon icon);
-
-    /**
-     * Gets the Icon registered in a slot of a Menu
-     *
-     * @param slot Slot number to look for
-     * @return An Icon if the slot is registered, null if not
-     */
-    public Icon getSlot(int slot);
-
-    /**
-     * Gets the registered click item that opens a Menu when clicked by a player
-     *
-     * @return Click item registered to a Menu
-     */
-    public ItemStack getClickItem();
-
-    /**
-     * Sets the click item that opens a Menu when clicked by a player
-     * </p>
-     *
-     * @param clickItem Click item to register
-     * @see {@link org.bukkit.inventory.ItemStack#isSimilar(org.bukkit.inventory.ItemStack)} for method used to compare
-     * itemstack similarity for menu triggers
-     */
-    public void setClickItem(ItemStack clickItem);
+    public long getId() {
+        return id;
+    }
 
     /**
      * Shows a Menu to a player
      *
      * @param viewer Player to show the Menu to
      */
-    public void show(Player viewer);
+    public void show(Player viewer) {
+        Event openEvent = this.getEventToCall();
+        if (openEvent != null) {
+            Bukkit.getServer().getPluginManager().callEvent(openEvent);
+            if (openEvent instanceof Cancellable && ((Cancellable) openEvent).isCancelled()) {
+                return;
+            }
+        }
+
+        Inventory inv = this.getInventory();
+        for (Map.Entry<Integer, Icon> entry : this.getSlots().entrySet()) {
+            inv.setItem(entry.getKey(), entry.getValue().getIcon(viewer));
+        }
+        viewer.openInventory(inv);
+    }
 
     /**
      * Shows a Menu to multiple players
      *
      * @param viewers Players to show the Menu to
      */
-    public void show(Player... viewers);
+    public void show(Player... viewers) {
+        for (Player viewer : viewers) {
+            this.show(viewer);
+        }
+    }
 
     /**
      * Gets the event called when a Menu is opened
@@ -120,13 +150,51 @@ public interface Menu extends InventoryHolder, Listener {
      *
      * @return Event called when a Menu is opened
      */
-    public Event getEventToCall();
+    public Event getEventToCall() {
+        return null;
+    }
 
     /**
-     * Converts a Menu to a {@link com.dsh105.menuapi.persistence.Layout} for saving and creating new Menus
+     * Converts a Menu to a {@link Layout} for saving and creating new Menus
      *
      * @return Layout representing a Menu
      */
-    public Layout toLayout();
+    public Layout toLayout() {
+        return new Layout(this.getSlots(), this.getSize(), this.getTitle(), this.getClickItem());
+    }
+
+    @EventHandler
+    public void onInvClick(InventoryClickEvent event) {
+        HumanEntity human = event.getWhoClicked();
+        if (human instanceof Player) {
+            Player player = (Player) human;
+            Inventory inv = player.getOpenInventory().getTopInventory();
+            if (inv.getHolder() != null && inv.getHolder() instanceof Menu && event.getRawSlot() >= 0 && event.getRawSlot() < this.getSize()) {
+                Menu menu = (Menu) inv.getHolder();
+                if (menu.getId() == this.getId()) {
+                    event.setCancelled(true);
+                    Icon icon = getSlots().get(event.getSlot());
+                    if (icon != null) {
+                        if (icon.willClose()) {
+                            player.closeInventory();
+                        }
+                        icon.onClick(player);
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        ItemStack clickIcon = this.getClickItem();
+        if (clickIcon != null) {
+            ItemStack itemStack = event.getItem();
+            if (itemStack != null && itemStack.isSimilar(clickIcon)) {
+                this.show(event.getPlayer());
+                event.setCancelled(true);
+            }
+        }
+    }
 
 }

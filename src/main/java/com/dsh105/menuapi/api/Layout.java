@@ -15,11 +15,8 @@
  * along with MenuAPI.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.dsh105.menuapi.persistence;
+package com.dsh105.menuapi.api;
 
-import com.dsh105.menuapi.api.Icon;
-import com.dsh105.menuapi.api.Menu;
-import com.dsh105.menuapi.impl.MenuImpl;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -29,67 +26,85 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
-import java.util.Map;
 
-public class Layout {
+/**
+ * Represents a Layout that can be used to create persistent Menus
+ * </p>
+ * Saving and loading from files is done using the Bukkit Config API
+ */
+public class Layout extends SlotHolder {
 
     private static final String LOAD_FAIL_MESSAGE = "Invalid Menu configuration. %s";
 
-    private HashMap<Integer, Icon> slots = new HashMap<>();
-    private int size;
-    private String title;
-    private ItemStack clickItem;
+    /**
+     * Construct a new Layout from an existing Menu
+     *
+     * @param menu Menu to construct the Layout from
+     */
+    public Layout(Menu menu) {
+        this(menu.getSlots(), menu.getSize(), menu.getTitle(), menu.getClickItem());
+    }
 
-    public Layout(Map<Integer, Icon> slots, int size) {
+    /**
+     * Construct a new Layout
+     *
+     * @param slots Slots to initialise the Layout with
+     * @param size  Size of the Layout
+     */
+    public Layout(HashMap<Integer, Icon> slots, int size) {
         this(slots, size, "Custom Menu");
     }
 
-    public Layout(Map<Integer, Icon> slots, int size, String title) {
+    /**
+     * Construct a new Layout
+     *
+     * @param slots Slots to initialise the Layout with
+     * @param size  Size of the Layout
+     * @param title Title of the Layout
+     */
+    public Layout(HashMap<Integer, Icon> slots, int size, String title) {
         this(slots, size, title, null);
     }
 
-    public Layout(Map<Integer, Icon> slots, int size, String title, ItemStack clickItem) {
-        this.slots = new HashMap<>(slots);
-        this.size = size;
-        this.title = title;
-        this.clickItem = clickItem;
+    /**
+     * Construct a new Layout
+     *
+     * @param slots     Slots to initialise the Layout with
+     * @param size      Size of the Layout
+     * @param title     Title of the Layout
+     * @param clickItem Click item registered to a Menu
+     */
+    public Layout(HashMap<Integer, Icon> slots, int size, String title, ItemStack clickItem) {
+        super(size, title, clickItem, slots);
     }
 
-    public int getSize() {
-        return size;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public ItemStack getClickItem() {
-        return clickItem;
-    }
-
-    public Map<Integer, Icon> getSlots() {
-        return new HashMap<>(slots);
-    }
-
-    public void setSlot(int slot, Icon icon) {
-        if (slot >= this.size) {
-            throw new IllegalArgumentException("Slot " + slot + " does not exist. Failed to apply Icon to slot.");
-        }
-        this.slots.put(slot, icon);
-    }
-
-    public Icon getSlot(int slot) {
-        return this.slots.get(slot);
-    }
-
+    /**
+     * Converts a Layout to a new {@link com.dsh105.menuapi.api.Menu}
+     *
+     * @param plugin Plugin to create the Menu for
+     * @return Constructed Menu
+     */
     public Menu toMenu(JavaPlugin plugin) {
-        return new MenuImpl(plugin, this);
+        return new Menu(plugin, this);
     }
 
+    /**
+     * Save a Layout to a file to allow for persistence
+     *
+     * @param config Config file to save to
+     * @return This object
+     */
     public Layout saveToFile(FileConfiguration config) {
         return this.saveToFile(config, "");
     }
 
+    /**
+     * Save a Layout to a file to allow for persistence
+     *
+     * @param config      Config file to save to
+     * @param sectionName Section to save the data under
+     * @return This object
+     */
     public Layout saveToFile(FileConfiguration config, String sectionName) {
         ConfigurationSection section = (sectionName == null || sectionName.isEmpty()) ? config : config.getConfigurationSection(sectionName);
 
@@ -108,22 +123,35 @@ public class Layout {
         return this;
     }
 
+    /**
+     * Load a saved Layout from a configuration file
+     *
+     * @param config Config file to save to
+     * @return This object
+     */
     public Layout loadFromFile(FileConfiguration config) {
         return this.loadFromFile(config, "");
     }
 
+    /**
+     * Load a saved Layout from a configuration file
+     *
+     * @param config      Config file to save to
+     * @param sectionName Section to save the data under
+     * @return This object
+     */
     public Layout loadFromFile(FileConfiguration config, String sectionName) {
         ConfigurationSection section = (sectionName == null || sectionName.isEmpty()) ? config : config.getConfigurationSection(sectionName);
 
         Validate.notNull(section.get("slots"), String.format(LOAD_FAIL_MESSAGE, "Inventory size not found!"));
         Validate.notNull(section.get("title"), String.format(LOAD_FAIL_MESSAGE, "Menu name not found!"));
 
-        title = section.getString("title", "Menu");
-        size = section.getInt("slots", 45);
+        this.title = section.getString("title", "Menu");
+        this.size = section.getInt("slots", 45);
 
         ConfigurationSection clickItemSection = config.getConfigurationSection("item");
         if (clickItemSection != null) {
-            clickItem = this.loadItem(clickItemSection, "");
+            this.setClickItem(this.loadItem(clickItemSection, ""));
         }
 
         ConfigurationSection slotsSection = section.getConfigurationSection("slots");
@@ -134,10 +162,26 @@ public class Layout {
         return this;
     }
 
+    /**
+     * Move a saved Layout from one configuration file to another
+     * </p>
+     * This does NOT delete the old data
+     *
+     * @param from Config file to retrieve saved data from
+     * @param to   Config file to save data to
+     * @return This object
+     */
     public Layout moveFileDataTo(FileConfiguration from, FileConfiguration to) {
         return this.moveFileDataTo(from, "", to, "");
     }
 
+    /**
+     * @param from            Config file to retrieve saved data from
+     * @param fromSectionName Section to retrieve data from
+     * @param to              Config file to save data to
+     * @param toSectionName   Section to save data to
+     * @return This object
+     */
     public Layout moveFileDataTo(FileConfiguration from, String fromSectionName, FileConfiguration to, String toSectionName) {
         ConfigurationSection fromSection = (fromSectionName == null || fromSectionName.isEmpty()) ? from : from.getConfigurationSection(fromSectionName);
 

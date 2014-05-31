@@ -17,6 +17,9 @@
 
 package com.dsh105.menuapi;
 
+/**
+ * Nothing much to see here! All Menu/Layout stuff is handled in their respective classes
+ */
 public class MenuAPI {
 
 }
