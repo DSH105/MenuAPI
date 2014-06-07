@@ -36,6 +36,9 @@ public class Layout extends SlotHolder {
 
     private static final String LOAD_FAIL_MESSAGE = "Invalid Menu configuration. %s";
 
+    public Layout() {
+    }
+
     /**
      * Construct a new Layout from an existing Menu
      *
@@ -43,6 +46,15 @@ public class Layout extends SlotHolder {
      */
     public Layout(Menu menu) {
         this(menu.getSlots(), menu.getSize(), menu.getTitle(), menu.getClickItem());
+    }
+
+    /**
+     * Construct a new Layout
+     *
+     * @param size  Size of the Layout
+     */
+    public Layout(int size, String title, ItemStack clickItem) {
+        this(new HashMap<Integer, Icon>(), size, title, clickItem);
     }
 
     /**
@@ -117,7 +129,14 @@ public class Layout extends SlotHolder {
 
         ConfigurationSection slotsSection = section.getConfigurationSection("slots");
         for (int i = 1; i <= getSize(); i++) { // Account for people who don't know about '0' being the first. Use '1' instead
-            this.saveItem(getSlot(i - 1).getIcon(), slotsSection, "slot-" + i + ".");
+            Icon icon = getSlot(i - 1);
+            this.saveItem(icon.getIcon(), slotsSection, "slot-" + i + ".");
+            if (icon instanceof CommandIcon) {
+                config.set("slot-" + i + ".command", ((CommandIcon) icon).getCommand());
+                config.set("slot-" + i + ".permission", ((CommandIcon) icon).getPermission());
+                config.set("slot-" + i + ".changeNameColours", ((CommandIcon) icon).willChangeNameColours());
+                config.set("slot-" + i + ".performAsConsole", ((CommandIcon) icon).willPerformAsConsole());
+            }
         }
 
         return this;
@@ -156,7 +175,16 @@ public class Layout extends SlotHolder {
 
         ConfigurationSection slotsSection = section.getConfigurationSection("slots");
         for (int i = 1; i <= getSize(); i++) { // Account for people who don't know about '0' being the first. Use '1' instead
-            this.setSlot(i - 1, new Icon(this.loadItem(slotsSection, "slot-" + i + ".")));
+            Icon icon;
+            ItemStack iconStack = this.loadItem(slotsSection, "slot-" + i + ".");
+            if (config.get("slot-" + i + ".command") != null) {
+                icon = new CommandIcon(config.getString("slot-" + i + ".command"), config.getString("slot-" + i + ".permission"), iconStack);
+                ((CommandIcon) icon).setChangeNameColours(config.getBoolean("slot-" + i + ".changeNameColours", true));
+                ((CommandIcon) icon).setPerformAsConsole(config.getBoolean("slot-" + i + ".performAsConsole", false));
+            } else {
+                icon = new Icon(this.loadItem(slotsSection, "slot-" + i + "."));
+            }
+            this.setSlot(i - 1, icon);
         }
 
         return this;
@@ -194,7 +222,7 @@ public class Layout extends SlotHolder {
         return this;
     }
 
-    private ItemStack loadItem(ConfigurationSection configSection, String searchPrefix) {
+    public ItemStack loadItem(ConfigurationSection configSection, String searchPrefix) {
         String name = configSection.getString(searchPrefix + "name");
         Material material = Material.getMaterial(configSection.getString(searchPrefix + "material"));
         short materialData = (short) configSection.getInt(searchPrefix + "materialData", 0);
@@ -218,7 +246,7 @@ public class Layout extends SlotHolder {
         return Icon.buildItemStack(material, amount, materialData, ChatColor.translateAlternateColorCodes('&', name), loreCopy);
     }
 
-    private void saveItem(ItemStack toSave, ConfigurationSection configSection, String searchPrefix) {
+    public void saveItem(ItemStack toSave, ConfigurationSection configSection, String searchPrefix) {
         configSection.set(searchPrefix + "name", toSave.getItemMeta().getDisplayName());
         configSection.set(searchPrefix + "material", toSave.getType());
         configSection.set(searchPrefix + "materialData", toSave.getDurability());

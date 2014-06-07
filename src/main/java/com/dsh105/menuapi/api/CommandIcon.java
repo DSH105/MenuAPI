@@ -32,7 +32,7 @@ public class CommandIcon extends Icon {
     private String permission;
     private String command;
 
-    private boolean changeNameColours;
+    private boolean changeNameColours = true;
     private boolean performAsConsole;
 
     public CommandIcon(String permission, String command, Material material, String name, String... lore) {
@@ -53,6 +53,22 @@ public class CommandIcon extends Icon {
     public CommandIcon(String permission, String command, ItemStack itemStack) {
         super(itemStack);
         prepare(permission, command);
+    }
+
+    public CommandIcon(String command, Material material, String name, String... lore) {
+        this(null, command, material, name, lore);
+    }
+
+    public CommandIcon(String command, Material material, int amount, String name, String... lore) {
+        this(null, command, material, amount, name, lore);
+    }
+
+    public CommandIcon(String command, Material material, int amount, short materialData, String name, String... lore) {
+        this(null, command, material, amount, materialData, name, lore);
+    }
+
+    public CommandIcon(String command, ItemStack itemStack) {
+        this(null, command, itemStack);
     }
 
     private void prepare(String permission, String command) {
@@ -88,7 +104,7 @@ public class CommandIcon extends Icon {
     public ItemStack getIcon(Player viewer) {
         String finalName = this.getName();
         if (willChangeNameColours()) {
-            finalName = (viewer.hasPermission(this.permission) ? ChatColor.GREEN : ChatColor.RED) + ChatColor.stripColor(this.getName());
+            finalName = ((this.permission == null ? true : viewer.hasPermission(this.permission)) ? ChatColor.GREEN : ChatColor.RED) + ChatColor.stripColor(this.getName());
         }
         return buildItemStack(this.getMaterial(), this.getAmount(), this.getMaterialData(), finalName, this.getLore());
     }

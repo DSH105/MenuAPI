@@ -31,6 +31,10 @@ public abstract class SlotHolder {
     protected String title;
     protected ItemStack clickItem;
 
+    protected SlotHolder() {
+
+    }
+
     protected SlotHolder(int size, String title) {
         this(size, title, new HashMap<Integer, Icon>());
     }
@@ -40,15 +44,23 @@ public abstract class SlotHolder {
     }
 
     protected SlotHolder(int size, String title, ItemStack clickItem, HashMap<Integer, Icon> slots) {
+        setSize(size);
+        this.title = title;
+        this.slots = slots;
+        this.clickItem = clickItem;
+    }
+
+    protected void setSize(int size) {
         if (size < 0) {
             size = 9;
         } else if (size % 9 != 0) {
             size += 9 - (size % 9);
         }
         this.size = size;
+    }
+
+    protected void setTitle(String title) {
         this.title = title;
-        this.slots = slots;
-        this.clickItem = clickItem;
     }
 
     /**
