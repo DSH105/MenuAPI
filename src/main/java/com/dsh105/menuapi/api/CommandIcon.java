@@ -35,13 +35,13 @@ public class CommandIcon extends Icon {
     private boolean performAsConsole;
 
     /**
-     * Constructor
+     * Constructs a command based Icon for a Menu
      *
-     * @param permission permission node
-     * @param command command to run
-     * @param material material of icon
-     * @param name display name of icon
-     * @param lore lore of icon
+     * @param permission Permission required by the player to run the command
+     * @param command    Command to run
+     * @param material   Type of item
+     * @param name       Name of item
+     * @param lore       Item description
      */
     public CommandIcon(String permission, String command, Material material, String name, String... lore) {
         super(material, name, lore);
@@ -49,14 +49,14 @@ public class CommandIcon extends Icon {
     }
 
     /**
-     * Constructor
+     * Constructs a command based Icon for a Menu
      *
-     * @param permission permission node
-     * @param command command to run
-     * @param material material of icon
-     * @param amount
-     * @param name display name of icon
-     * @param lore lore of icon
+     * @param permission Permission required by the player to run the command
+     * @param command    Command to run
+     * @param material   Type of item
+     * @param amount     Amount of the item
+     * @param name       Name of item
+     * @param lore       Item description
      */
     public CommandIcon(String permission, String command, Material material, int amount, String name, String... lore) {
         super(material, amount, name, lore);
@@ -64,15 +64,15 @@ public class CommandIcon extends Icon {
     }
 
     /**
-     * Constructor
+     * Constructs a command based Icon for a Menu
      *
-     * @param permission permission node
-     * @param command command to run
-     * @param material material of icon
-     * @param amount
-     * @param material material of iconData
-     * @param name display name of icon
-     * @param lore lore of icon
+     * @param permission   Permission required by the player to run the command
+     * @param command      Command to run
+     * @param material     Type of item
+     * @param amount       Amount of the item
+     * @param materialData Item data
+     * @param name         Name of item
+     * @param lore         Item description
      */
     public CommandIcon(String permission, String command, Material material, int amount, short materialData, String name, String... lore) {
         super(material, amount, materialData, name, lore);
@@ -80,11 +80,11 @@ public class CommandIcon extends Icon {
     }
 
     /**
-     * Constructor
+     * Constructs a command based Icon for a Menu
      *
-     * @param permission permission node
-     * @param command command to run
-     * @param itemStack
+     * @param permission Permission required by the player to run the command
+     * @param command    Command to run
+     * @param itemStack  ItemStack to represent this Icon
      */
     public CommandIcon(String permission, String command, ItemStack itemStack) {
         super(itemStack);
@@ -92,49 +92,49 @@ public class CommandIcon extends Icon {
     }
 
     /**
-     * Constructor
+     * Constructs a command based Icon for a Menu
      *
-     * @param command command to run
+     * @param command  command to run
      * @param material material of icon
-     * @param name display name of icon
-     * @param lore lore of icon
+     * @param name     display name of icon
+     * @param lore     lore of icon
      */
     public CommandIcon(String command, Material material, String name, String... lore) {
         this(null, command, material, name, lore);
     }
 
     /**
-     * Constructor
+     * Constructs a command based Icon for a Menu
      *
-     * @param command command to run
-     * @param material material of icon
-     * @param amount
-     * @param name display name of icon
-     * @param lore lore of icon
+     * @param command  Command to run
+     * @param material Type of item
+     * @param amount   Amount of the item
+     * @param name     Name of item
+     * @param lore     Item description
      */
     public CommandIcon(String command, Material material, int amount, String name, String... lore) {
         this(null, command, material, amount, name, lore);
     }
 
     /**
-     * Constructor
+     * Constructs a command based Icon for a Menu
      *
-     * @param command command to run
-     * @param material material of icon
-     * @param amount
-     * @param material material of iconData
-     * @param name display name of icon
-     * @param lore lore of icon
+     * @param command      Command to run
+     * @param material     Type of item
+     * @param amount       Amount of the item
+     * @param materialData Item data
+     * @param name         Name of item
+     * @param lore         Item description
      */
     public CommandIcon(String command, Material material, int amount, short materialData, String name, String... lore) {
         this(null, command, material, amount, materialData, name, lore);
     }
 
     /**
-     * Constructor
+     * Constructs a command based Icon for a Menu
      *
-     * @param command command to run
-     * @param itemStack
+     * @param command   Command to run
+     * @param itemStack ItemStack to represent this Icon
      */
     public CommandIcon(String command, ItemStack itemStack) {
         this(null, command, itemStack);
@@ -148,7 +148,7 @@ public class CommandIcon extends Icon {
     /**
      * Get the permission node that is required
      *
-     * @return permission node
+     * @return Permission node required to run the command
      */
     public String getPermission() {
         return permission;
@@ -157,44 +157,52 @@ public class CommandIcon extends Icon {
     /**
      * Get the command that will be executed
      *
-     * @return command
+     * @return Command to be executed
      */
     public String getCommand() {
         return command;
     }
 
+    /**
+     * Gets whether the icon can modify the name to match whether the player viewing it can execute the command or not
+     * <p/>
+     * Modifies item name to either green or red, based on the above condition
+     *
+     * @return True if the item name can be changed
+     */
     public boolean willChangeNameColours() {
         return changeNameColours;
     }
 
+    /**
+     * Sets whether the icon can modify the name to match whether the player viewing it can execute the command or not
+     * <p/>
+     * Modifies item name to either green or red, based on the above condition
+     *
+     * @param changeNameColours True if the item name can be changed
+     */
     public void setChangeNameColours(boolean changeNameColours) {
         this.changeNameColours = changeNameColours;
     }
 
     /**
-     * See if the command is to be executed as console
+     * Gets if the command is to be executed as console
      *
-     * @return true if command will be executed as console
+     * @return True if command will be executed as console
      */
     public boolean willPerformAsConsole() {
         return performAsConsole;
     }
 
     /**
-     * Set if the command is to be executed as console
+     * Sets if the command is to be executed as console
      *
-     * @param performAsConsole true if command will be executed as console
+     * @param performAsConsole True if command will be executed as console
      */
     public void setPerformAsConsole(boolean performAsConsole) {
         this.performAsConsole = performAsConsole;
     }
 
-    /**
-     * Generate the icon to be delivered to the player
-     *
-     * @param viewer player who is viewing the icon
-     * @return itemstack generated icon for the viewer
-     */
     @Override
     public ItemStack getIcon(Player viewer) {
         String finalName = this.getName();
@@ -204,10 +212,6 @@ public class CommandIcon extends Icon {
         return buildItemStack(this.getMaterial(), this.getAmount(), this.getMaterialData(), finalName, this.getLore());
     }
 
-    /**
-     * 
-     * @param viewer Player that opened the Menu
-     */
     @Override
     public void onClick(Player viewer) {
         Bukkit.dispatchCommand(this.willPerformAsConsole() ? Bukkit.getConsoleSender() : viewer, this.getCommand());

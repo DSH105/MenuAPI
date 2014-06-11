@@ -51,7 +51,7 @@ public class Layout extends SlotHolder {
     /**
      * Construct a new Layout
      *
-     * @param size  Size of the Layout
+     * @param size Size of the Layout
      */
     public Layout(int size, String title) {
         this(new HashMap<Integer, Icon>(), size, title);
@@ -60,7 +60,7 @@ public class Layout extends SlotHolder {
     /**
      * Construct a new Layout
      *
-     * @param size  Size of the Layout
+     * @param size Size of the Layout
      */
     public Layout(int size, String title, ItemStack clickItem) {
         this(new HashMap<Integer, Icon>(), size, title, clickItem);

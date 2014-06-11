@@ -98,6 +98,16 @@ public class Icon {
         this.lore = lore.toArray(new String[lore.size()]);
     }
 
+    /**
+     * Builds an ItemStack from the given information
+     *
+     * @param material     Type of item
+     * @param amount       Amount of the item
+     * @param materialData Item data
+     * @param name         Name of item
+     * @param lore         Item description
+     * @return Constructed ItemStack
+     */
     public static ItemStack buildItemStack(Material material, int amount, short materialData, String name, String... lore) {
         ItemStack i = new ItemStack(material, amount, materialData);
         ItemMeta meta = i.getItemMeta();
@@ -119,12 +129,32 @@ public class Icon {
     }
 
     /**
+     * Sets the type of an Icon
+     *
+     * @param material New type
+     */
+    public void setMaterial(Material material) {
+        this.material = material;
+        this.itemStack = null;
+    }
+
+    /**
      * Gets the item data of an Icon
      *
      * @return Item data
      */
     public short getMaterialData() {
         return materialData;
+    }
+
+    /**
+     * Sets the item data of an Icon
+     *
+     * @param materialData New item data
+     */
+    public void setMaterialData(short materialData) {
+        this.materialData = materialData;
+        this.itemStack = null;
     }
 
     /**
@@ -137,12 +167,32 @@ public class Icon {
     }
 
     /**
+     * Sets the amount of an item shown in a Menu to represent an Icon
+     *
+     * @param amount New item amount
+     */
+    public void setAmount(int amount) {
+        this.amount = amount;
+        this.itemStack = null;
+    }
+
+    /**
      * Gets the item name of an Icon
      *
      * @return Name of an Icon
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Sets the item name of an Icon
+     *
+     * @param name New item name
+     */
+    public void setName(String name) {
+        this.name = name;
+        this.itemStack = null;
     }
 
     /**
@@ -154,26 +204,11 @@ public class Icon {
         return lore;
     }
 
-    public void setMaterial(Material material) {
-        this.material = material;
-        this.itemStack = null;
-    }
-
-    public void setMaterialData(short materialData) {
-        this.materialData = materialData;
-        this.itemStack = null;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-        this.itemStack = null;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-        this.itemStack = null;
-    }
-
+    /**
+     * Sets the item description of an Icon
+     *
+     * @param lore New item description
+     */
     public void setLore(String... lore) {
         this.lore = lore;
         this.itemStack = null;
@@ -220,6 +255,13 @@ public class Icon {
         this.close = close;
     }
 
+    /**
+     * Sets the callback for an Icon
+     * <p/>
+     * Callbacks are executed when the icon is clicked by a player
+     *
+     * @param callback Callback
+     */
     public void setCallback(IconCallback callback) {
         this.callback = callback;
     }

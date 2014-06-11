@@ -19,7 +19,15 @@ package com.dsh105.menuapi.api;
 
 import org.bukkit.entity.Player;
 
+/**
+ * Represents a callback for Icons when clicked
+ */
 public abstract class IconCallback {
 
+    /**
+     * Called when the icon is clicked by a Player
+     *
+     * @param viewer Player who clicked the icon
+     */
     public abstract void run(Player viewer);
 }
