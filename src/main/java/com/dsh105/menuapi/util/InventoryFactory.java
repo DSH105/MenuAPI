@@ -28,15 +28,20 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 /**
  * Original source: https://gist.github.com/DarkBlade12/9002495
  */
-
 public class InventoryFactory {
 
-    public static String toString(Inventory i) {
+    /**
+     * Encodes an Inventory into a Base64 String
+     *
+     * @param inventory inventory to be encoded
+     * @return string the encoded inventory
+     */
+    public static String encodeInventory(Inventory inventory) {
         YamlConfiguration configuration = new YamlConfiguration();
-        configuration.set("Title", i.getTitle());
-        configuration.set("Size", i.getSize());
-        for (int a = 0; a < i.getSize(); a++) {
-            ItemStack s = i.getItem(a);
+        configuration.set("Title", inventory.getTitle());
+        configuration.set("Size", inventory.getSize());
+        for (int a = 0; a < inventory.getSize(); a++) {
+            ItemStack s = inventory.getItem(a);
             if (s != null) {
                 configuration.set("Contents." + a, s);
             }
@@ -44,10 +49,16 @@ public class InventoryFactory {
         return Base64Coder.encodeString(configuration.saveToString());
     }
 
-    public static Inventory fromString(String s) {
+    /**
+     * Decodes a Base64 String into an Inventory
+     *
+     * @param encoded string to be decoded into an inventory
+     * @return inventory the decoded Base64 string
+     */
+    public static Inventory decodeString(String encoded) {
         YamlConfiguration configuration = new YamlConfiguration();
         try {
-            configuration.loadFromString(Base64Coder.decodeString(s));
+            configuration.loadFromString(Base64Coder.decodeString(encoded));
             Inventory i = Bukkit.createInventory(null, configuration.getInt("Size"), configuration.getString("Title"));
             ConfigurationSection contents = configuration.getConfigurationSection("Contents");
             for (String index : contents.getKeys(false)) {
