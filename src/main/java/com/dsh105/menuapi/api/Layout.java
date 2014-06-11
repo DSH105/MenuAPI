@@ -53,6 +53,15 @@ public class Layout extends SlotHolder {
      *
      * @param size  Size of the Layout
      */
+    public Layout(int size, String title) {
+        this(new HashMap<Integer, Icon>(), size, title);
+    }
+
+    /**
+     * Construct a new Layout
+     *
+     * @param size  Size of the Layout
+     */
     public Layout(int size, String title, ItemStack clickItem) {
         this(new HashMap<Integer, Icon>(), size, title, clickItem);
     }

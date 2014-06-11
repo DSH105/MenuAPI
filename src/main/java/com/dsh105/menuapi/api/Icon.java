@@ -39,6 +39,8 @@ public class Icon {
     private String name;
     private String[] lore;
 
+    private IconCallback callback;
+
     private boolean close = true;
 
     protected Icon() {
@@ -78,7 +80,11 @@ public class Icon {
      * @param lore         Item description
      */
     public Icon(Material material, int amount, short materialData, String name, String... lore) {
-        this(buildItemStack(material, amount, materialData, name, lore));
+        this.material = material;
+        this.amount = amount;
+        this.materialData = materialData;
+        this.name = name;
+        this.lore = lore;
     }
 
     /**
@@ -87,11 +93,7 @@ public class Icon {
      * @param itemStack ItemStack to represent this Icon
      */
     public Icon(ItemStack itemStack) {
-        this.itemStack = itemStack;
-        this.amount = itemStack.getAmount();
-        this.material = itemStack.getType();
-        this.materialData = itemStack.getDurability();
-        this.name = itemStack.getItemMeta().getDisplayName();
+        this(itemStack.getType(), itemStack.getAmount(), itemStack.getDurability(), itemStack.getItemMeta().getDisplayName());
         List<String> lore = itemStack.getItemMeta().getLore();
         this.lore = lore.toArray(new String[lore.size()]);
     }
@@ -152,12 +154,40 @@ public class Icon {
         return lore;
     }
 
+    public void setMaterial(Material material) {
+        this.material = material;
+        this.itemStack = null;
+    }
+
+    public void setMaterialData(short materialData) {
+        this.materialData = materialData;
+        this.itemStack = null;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+        this.itemStack = null;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+        this.itemStack = null;
+    }
+
+    public void setLore(String... lore) {
+        this.lore = lore;
+        this.itemStack = null;
+    }
+
     /**
      * Gets the {@link org.bukkit.inventory.ItemStack} that represents an Icon
      *
      * @return Type of an Icon
      */
     public ItemStack getIcon() {
+        if (itemStack == null) {
+            itemStack = buildItemStack(this.material, this.amount, this.materialData, this.name, this.lore);
+        }
         return itemStack;
     }
 
@@ -190,12 +220,18 @@ public class Icon {
         this.close = close;
     }
 
+    public void setCallback(IconCallback callback) {
+        this.callback = callback;
+    }
+
     /**
      * Called when an Icon is clicked by a player viewing a Menu
      *
      * @param viewer Player that opened the Menu
      */
     public void onClick(Player viewer) {
-
+        if (this.callback != null) {
+            this.callback.run(viewer);
+        }
     }
 }
