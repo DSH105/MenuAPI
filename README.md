@@ -1,7 +1,7 @@
 MenuAPI
 =======
 
-API for managing custom inventory menus (in-game GUI interface) using the Bukkt API.
+API for managing custom inventory menus (in-game GUI interface) using the Bukkit API.
 
 Purely built for the purpose of being used in my plugins. Feel free to use at your own leisure.
 
