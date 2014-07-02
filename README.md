@@ -11,7 +11,7 @@ I use Maven 3 to build MenuAPI. Simply run the `mvn` command in the project root
 
 You can depend on MenuAPI by adding the following to your `pom.xml`
 
-If you're familiar with Maven, you'll be able to automatically download EchoPet as a dependency using the following setup.
+If you're familiar with Maven, you'll be able to automatically download MenuAPI as a dependency using the following setup.
 
 ```xml
 <repository>
