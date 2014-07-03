@@ -26,6 +26,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -46,6 +47,7 @@ import java.util.Map;
 public class Menu extends SlotHolder implements InventoryHolder, Listener {
 
     private long id;
+    private boolean closeOnOutsideClick = true;
 
     /**
      * Construct a Menu with the given title and size
@@ -111,6 +113,14 @@ public class Menu extends SlotHolder implements InventoryHolder, Listener {
         return id;
     }
 
+    public boolean willCloseOnOutsideClick() {
+        return closeOnOutsideClick;
+    }
+
+    public void setCloseOnOutsideClick(boolean closeOnOutsideClick) {
+        this.closeOnOutsideClick = closeOnOutsideClick;
+    }
+
     /**
      * Shows a Menu to a player
      *
@@ -173,6 +183,12 @@ public class Menu extends SlotHolder implements InventoryHolder, Listener {
                 Menu menu = (Menu) inv.getHolder();
                 if (menu.getId() == this.getId()) {
                     event.setCancelled(true);
+
+                    if (event.getSlotType().equals(InventoryType.SlotType.OUTSIDE) && willCloseOnOutsideClick()) {
+                        player.closeInventory();
+                        return;
+                    }
+
                     Icon icon = getSlots().get(event.getSlot());
                     if (icon != null) {
                         if (icon.willClose()) {
