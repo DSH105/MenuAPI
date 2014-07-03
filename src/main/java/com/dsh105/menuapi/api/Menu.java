@@ -17,6 +17,8 @@
 
 package com.dsh105.menuapi.api;
 
+import com.dsh105.menuapi.api.event.IconClickEvent;
+import com.dsh105.menuapi.api.event.MenuOpenEvent;
 import com.dsh105.menuapi.util.MenuId;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
@@ -127,12 +129,10 @@ public class Menu extends SlotHolder implements InventoryHolder, Listener {
      * @param viewer Player to show the Menu to
      */
     public void show(Player viewer) {
-        Event openEvent = this.getEventToCall();
-        if (openEvent != null) {
-            Bukkit.getServer().getPluginManager().callEvent(openEvent);
-            if (openEvent instanceof Cancellable && ((Cancellable) openEvent).isCancelled()) {
-                return;
-            }
+        MenuOpenEvent openEvent = new MenuOpenEvent(this, viewer);
+        Bukkit.getServer().getPluginManager().callEvent(openEvent);
+        if (openEvent.isCancelled()) {
+            return;
         }
 
         Inventory inv = this.getInventory();
@@ -151,17 +151,6 @@ public class Menu extends SlotHolder implements InventoryHolder, Listener {
         for (Player viewer : viewers) {
             this.show(viewer);
         }
-    }
-
-    /**
-     * Gets the event called when a Menu is opened
-     * </p>
-     * If this event is not specified, none will be called
-     *
-     * @return Event called when a Menu is opened
-     */
-    public Event getEventToCall() {
-        return null;
     }
 
     /**
@@ -191,6 +180,12 @@ public class Menu extends SlotHolder implements InventoryHolder, Listener {
 
                     Icon icon = getSlots().get(event.getSlot());
                     if (icon != null) {
+                        IconClickEvent openEvent = new IconClickEvent(this, icon, player);
+                        Bukkit.getServer().getPluginManager().callEvent(openEvent);
+                        if (openEvent.isCancelled()) {
+                            return;
+                        }
+
                         if (icon.willClose()) {
                             player.closeInventory();
                         }
