@@ -22,7 +22,7 @@ If you're familiar with Maven, you'll be able to automatically download MenuAPI 
 
 ```xml
 <dependency>
-    <groupId>com.dsh105<groupId>
+    <groupId>com.dsh105</groupId>
     <artifactId>MenuAPI</artifactId>
     <version>1.0.0</version>
 </dependency>
