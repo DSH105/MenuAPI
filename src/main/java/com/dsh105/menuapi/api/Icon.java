@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  * Represents an Icon that appears in a {@link com.dsh105.menuapi.api.Menu}
- * </p>
+ * <p/>
  * Icons handle the events that occur when a certain button in an inventory is clicked
  */
 public class Icon {
@@ -228,7 +228,7 @@ public class Icon {
 
     /**
      * Gets the {@link org.bukkit.inventory.ItemStack} that represents an Icon
-     * </p>
+     * <p/>
      * Override this method to implement custom named items for certain players
      *
      * @return Type of an Icon
