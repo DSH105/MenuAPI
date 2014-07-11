@@ -23,6 +23,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
@@ -105,7 +106,7 @@ public class Layout extends SlotHolder {
      * @param plugin Plugin to create the Menu for
      * @return Constructed Menu
      */
-    public Menu toMenu(JavaPlugin plugin) {
+    public Menu toMenu(Plugin plugin) {
         return new Menu(plugin, this);
     }
 

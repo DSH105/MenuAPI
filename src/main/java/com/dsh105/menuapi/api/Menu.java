@@ -33,6 +33,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
@@ -60,7 +61,7 @@ public class Menu extends SlotHolder implements InventoryHolder, Listener {
      * @param title  Title of the inventory
      * @param size   Size of the inventory
      */
-    public Menu(JavaPlugin plugin, String title, int size) {
+    public Menu(Plugin plugin, String title, int size) {
         this(plugin, title, size, new HashMap<Integer, Icon>());
     }
 
@@ -70,7 +71,7 @@ public class Menu extends SlotHolder implements InventoryHolder, Listener {
      * @param plugin Plugin instance
      * @param layout Layout to construct the Menu from
      */
-    public Menu(JavaPlugin plugin, Layout layout) {
+    public Menu(Plugin plugin, Layout layout) {
         this(plugin, layout.getTitle(), layout.getSize(), layout.getClickItem(), layout.getSlots());
     }
 
@@ -82,7 +83,7 @@ public class Menu extends SlotHolder implements InventoryHolder, Listener {
      * @param size   Size of the inventory
      * @param slots  Slots to initialise the Menu with
      */
-    public Menu(JavaPlugin plugin, String title, int size, HashMap<Integer, Icon> slots) {
+    public Menu(Plugin plugin, String title, int size, HashMap<Integer, Icon> slots) {
         this(plugin, title, size, null, slots);
     }
 
@@ -95,7 +96,7 @@ public class Menu extends SlotHolder implements InventoryHolder, Listener {
      * @param clickItem Click item registered to a Menu
      * @param slots     Slots to initialise the Menu with
      */
-    public Menu(JavaPlugin plugin, String title, int size, ItemStack clickItem, HashMap<Integer, Icon> slots) {
+    public Menu(Plugin plugin, String title, int size, ItemStack clickItem, HashMap<Integer, Icon> slots) {
         super(size, title, clickItem, slots);
         this.id = MenuId.next();
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
