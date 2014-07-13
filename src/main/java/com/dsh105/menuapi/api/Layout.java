@@ -171,6 +171,9 @@ public class Layout extends SlotHolder {
      */
     public Layout loadFromFile(FileConfiguration config, String sectionName) {
         ConfigurationSection section = (sectionName == null || sectionName.isEmpty()) ? config : config.getConfigurationSection(sectionName);
+        if (section == null) {
+            return null;
+        }
 
         Validate.notNull(section.get("slots"), String.format(LOAD_FAIL_MESSAGE, "Inventory size not found!"));
         Validate.notNull(section.get("title"), String.format(LOAD_FAIL_MESSAGE, "Menu name not found!"));
@@ -222,6 +225,9 @@ public class Layout extends SlotHolder {
      */
     public Layout moveFileDataTo(FileConfiguration from, String fromSectionName, FileConfiguration to, String toSectionName) {
         ConfigurationSection fromSection = (fromSectionName == null || fromSectionName.isEmpty()) ? from : from.getConfigurationSection(fromSectionName);
+        if (fromSection == null) {
+            return null;
+        }
 
         Validate.notNull(fromSection.get("size"), String.format(LOAD_FAIL_MESSAGE, "Inventory size not found!"));
         Validate.notNull(fromSection.get("title"), String.format(LOAD_FAIL_MESSAGE, "Menu name not found!"));
