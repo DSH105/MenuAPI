@@ -27,6 +27,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Represents a Layout that can be used to create persistent Menus
@@ -129,6 +130,9 @@ public class Layout extends SlotHolder {
      */
     public Layout saveToFile(FileConfiguration config, String sectionName) {
         ConfigurationSection section = (sectionName == null || sectionName.isEmpty()) ? config : config.getConfigurationSection(sectionName);
+        if (section == null) {
+            section = config.createSection(sectionName == null ? "" : sectionName);
+        }
 
         section.set("size", getSize());
         section.set("title", getTitle());
@@ -138,14 +142,19 @@ public class Layout extends SlotHolder {
         }
 
         ConfigurationSection slotsSection = section.getConfigurationSection("slots");
+        if (slotsSection == null) {
+            slotsSection = config.createSection("slots");
+        }
         for (int i = 1; i <= getSize(); i++) { // Account for people who don't know about '0' being the first. Use '1' instead
             Icon icon = getSlot(i - 1);
-            this.saveItem(icon.getIcon(), slotsSection, "slot-" + i + ".");
-            if (icon instanceof CommandIcon) {
-                config.set("slot-" + i + ".command", ((CommandIcon) icon).getCommand());
-                config.set("slot-" + i + ".permission", ((CommandIcon) icon).getPermission());
-                config.set("slot-" + i + ".changeNameColours", ((CommandIcon) icon).willChangeNameColours());
-                config.set("slot-" + i + ".performAsConsole", ((CommandIcon) icon).willPerformAsConsole());
+            if (icon != null) {
+                this.saveItem(icon.getIcon(), slotsSection, "slot-" + i + ".");
+                if (icon instanceof CommandIcon) {
+                    config.set("slot-" + i + ".command", ((CommandIcon) icon).getCommand());
+                    config.set("slot-" + i + ".permission", ((CommandIcon) icon).getPermission());
+                    config.set("slot-" + i + ".changeNameColours", ((CommandIcon) icon).willChangeNameColours());
+                    config.set("slot-" + i + ".performAsConsole", ((CommandIcon) icon).willPerformAsConsole());
+                }
             }
         }
 
@@ -243,35 +252,28 @@ public class Layout extends SlotHolder {
         Material material = Material.getMaterial(configSection.getString(searchPrefix + "material"));
         short materialData = (short) configSection.getInt(searchPrefix + "materialData", 0);
         int amount = configSection.getInt(searchPrefix + "amount", 1);
-        String rawLore = configSection.getString(searchPrefix + "lore");
+        List<String> rawLore = configSection.getStringList(searchPrefix + "lore");
 
         Validate.notNull(name, String.format(LOAD_FAIL_MESSAGE, "Click item config section located, but item name was not found!"));
         Validate.notNull(material, String.format(LOAD_FAIL_MESSAGE, "Click item config section located, but item material was not found!"));
         Validate.notNull(rawLore, String.format(LOAD_FAIL_MESSAGE, "Click item config section located, but item lore was not found!"));
 
-        String[] lore = new String[]{rawLore};
-        if (rawLore.contains("_l")) {
-            lore = rawLore.split("_l");
-        }
-
-        String[] loreCopy = new String[lore.length];
+        String[] loreCopy = new String[rawLore.size()];
         for (int i = 0; i < loreCopy.length; i++) {
-            loreCopy[i] = ChatColor.translateAlternateColorCodes('&', lore[i]);
+            loreCopy[i] = ChatColor.translateAlternateColorCodes('&', rawLore.get(i));
         }
 
         return Icon.buildItemStack(material, amount, materialData, ChatColor.translateAlternateColorCodes('&', name), loreCopy);
     }
 
     public void saveItem(ItemStack toSave, ConfigurationSection configSection, String searchPrefix) {
-        configSection.set(searchPrefix + "name", toSave.getItemMeta().getDisplayName());
-        configSection.set(searchPrefix + "material", toSave.getType());
-        configSection.set(searchPrefix + "materialData", toSave.getDurability());
-        configSection.set(searchPrefix + "amount", toSave.getAmount());
+        if (toSave != null && toSave.getItemMeta() != null) {
+            configSection.set(searchPrefix + "name", toSave.getItemMeta().getDisplayName());
+            configSection.set(searchPrefix + "material", toSave.getType().name());
+            configSection.set(searchPrefix + "materialData", toSave.getDurability());
+            configSection.set(searchPrefix + "amount", toSave.getAmount());
 
-        StringBuilder builder = new StringBuilder();
-        for (String l : toSave.getItemMeta().getLore()) {
-            builder.append(l + (builder.length() == 0 ? "" : "_l"));
+            configSection.set(searchPrefix + "lore", toSave.getItemMeta().getLore());
         }
-        configSection.set(searchPrefix + "lore", builder.toString());
     }
 }
