@@ -143,17 +143,17 @@ public class Layout extends SlotHolder {
 
         ConfigurationSection slotsSection = section.getConfigurationSection("slots");
         if (slotsSection == null) {
-            slotsSection = config.createSection("slots");
+            slotsSection = section.createSection("slots");
         }
         for (int i = 1; i <= getSize(); i++) { // Account for people who don't know about '0' being the first. Use '1' instead
             Icon icon = getSlot(i - 1);
             if (icon != null) {
                 this.saveItem(icon.getIcon(), slotsSection, "slot-" + i + ".");
                 if (icon instanceof CommandIcon) {
-                    config.set("slot-" + i + ".command", ((CommandIcon) icon).getCommand());
-                    config.set("slot-" + i + ".permission", ((CommandIcon) icon).getPermission());
-                    config.set("slot-" + i + ".changeNameColours", ((CommandIcon) icon).willChangeNameColours());
-                    config.set("slot-" + i + ".performAsConsole", ((CommandIcon) icon).willPerformAsConsole());
+                    slotsSection.set("slot-" + i + ".command", ((CommandIcon) icon).getCommand());
+                    slotsSection.set("slot-" + i + ".permission", ((CommandIcon) icon).getPermission());
+                    slotsSection.set("slot-" + i + ".changeNameColours", ((CommandIcon) icon).willChangeNameColours());
+                    slotsSection.set("slot-" + i + ".performAsConsole", ((CommandIcon) icon).willPerformAsConsole());
                 }
             }
         }
