@@ -190,7 +190,7 @@ public class Layout extends SlotHolder {
         this.size = section.getInt("size", 45);
         this.title = ChatColor.translateAlternateColorCodes('&', section.getString("title", "Menu"));
 
-        ConfigurationSection clickItemSection = config.getConfigurationSection("item");
+        ConfigurationSection clickItemSection = section.getConfigurationSection("item");
         if (clickItemSection != null) {
             this.setClickItem(this.loadItem(clickItemSection, ""));
         }
@@ -199,10 +199,10 @@ public class Layout extends SlotHolder {
         for (int i = 1; i <= getSize(); i++) { // Account for people who don't know about '0' being the first. Use '1' instead
             Icon icon;
             ItemStack iconStack = this.loadItem(slotsSection, "slot-" + i + ".");
-            if (config.get("slot-" + i + ".command") != null) {
-                icon = new CommandIcon(config.getString("slot-" + i + ".command"), config.getString("slot-" + i + ".permission"), iconStack);
-                ((CommandIcon) icon).setChangeNameColours(config.getBoolean("slot-" + i + ".changeNameColours", true));
-                ((CommandIcon) icon).setPerformAsConsole(config.getBoolean("slot-" + i + ".performAsConsole", false));
+            if (slotsSection.get("slot-" + i + ".command") != null) {
+                icon = new CommandIcon(slotsSection.getString("slot-" + i + ".command"), slotsSection.getString("slot-" + i + ".permission"), iconStack);
+                ((CommandIcon) icon).setChangeNameColours(slotsSection.getBoolean("slot-" + i + ".changeNameColours", true));
+                ((CommandIcon) icon).setPerformAsConsole(slotsSection.getBoolean("slot-" + i + ".performAsConsole", false));
             } else {
                 icon = new Icon(this.loadItem(slotsSection, "slot-" + i + "."));
             }
