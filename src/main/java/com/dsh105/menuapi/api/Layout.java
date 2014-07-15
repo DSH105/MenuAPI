@@ -135,7 +135,7 @@ public class Layout extends SlotHolder {
         }
 
         section.set("size", getSize());
-        section.set("title", getTitle());
+        section.set("title", getTitle().replace(ChatColor.COLOR_CHAR, '&'));
 
         if (this.getClickItem() != null) {
             this.saveItem(getClickItem(), section, "item.");
@@ -187,8 +187,8 @@ public class Layout extends SlotHolder {
         Validate.notNull(section.get("slots"), String.format(LOAD_FAIL_MESSAGE, "Inventory size not found!"));
         Validate.notNull(section.get("title"), String.format(LOAD_FAIL_MESSAGE, "Menu name not found!"));
 
-        this.title = section.getString("title", "Menu");
-        this.size = section.getInt("slots", 45);
+        this.size = section.getInt("size", 45);
+        this.title = ChatColor.translateAlternateColorCodes('&', section.getString("title", "Menu"));
 
         ConfigurationSection clickItemSection = config.getConfigurationSection("item");
         if (clickItemSection != null) {
@@ -268,7 +268,7 @@ public class Layout extends SlotHolder {
 
     public void saveItem(ItemStack toSave, ConfigurationSection configSection, String searchPrefix) {
         if (toSave != null && toSave.getItemMeta() != null) {
-            configSection.set(searchPrefix + "name", toSave.getItemMeta().getDisplayName());
+            configSection.set(searchPrefix + "name", toSave.getItemMeta().getDisplayName().replace(ChatColor.COLOR_CHAR, '&'));
             configSection.set(searchPrefix + "material", toSave.getType().name());
             configSection.set(searchPrefix + "materialData", toSave.getDurability());
             configSection.set(searchPrefix + "amount", toSave.getAmount());
