@@ -17,14 +17,13 @@
 
 package com.dsh105.menuapi.api;
 
+import com.dsh105.commodus.StringUtil;
 import com.dsh105.menuapi.api.event.IconClickEvent;
 import com.dsh105.menuapi.api.event.MenuOpenEvent;
 import com.dsh105.menuapi.util.MenuId;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -34,7 +33,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -104,7 +102,7 @@ public class Menu extends SlotHolder implements InventoryHolder, Listener {
 
     @Override
     public Inventory getInventory() {
-        return Bukkit.createInventory(this, this.getSize(), this.getTitle());
+        return Bukkit.createInventory(this, this.getSize(), StringUtil.limitCharacters(this.getTitle(), 32));
     }
 
     /**

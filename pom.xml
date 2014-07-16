@@ -36,6 +36,12 @@
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public/</url>
         </repository>
+
+        <!-- Hawkfalcon CI -->
+        <repository>
+            <id>hawk-repo</id>
+            <url>http://ci.hawkfalcon.com/plugin/repository/everything/</url>
+        </repository>
     </repositories>
 
     <!-- Dependencies -->
@@ -46,6 +52,13 @@
             <artifactId>bukkit</artifactId>
             <version>1.7.9-R0.3-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- Commodus -->
+        <dependency>
+            <groupId>com.dsh105</groupId>
+            <artifactId>Commodus</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

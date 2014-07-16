@@ -17,6 +17,7 @@
 
 package com.dsh105.menuapi.util;
 
+import com.dsh105.commodus.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -38,7 +39,7 @@ public class InventoryFactory {
      */
     public static String encodeInventory(Inventory inventory) {
         YamlConfiguration configuration = new YamlConfiguration();
-        configuration.set("Title", inventory.getTitle());
+        configuration.set("Title", StringUtil.limitCharacters(inventory.getTitle(), 32));
         configuration.set("Size", inventory.getSize());
         for (int a = 0; a < inventory.getSize(); a++) {
             ItemStack s = inventory.getItem(a);
@@ -59,7 +60,7 @@ public class InventoryFactory {
         YamlConfiguration configuration = new YamlConfiguration();
         try {
             configuration.loadFromString(Base64Coder.decodeString(encoded));
-            Inventory i = Bukkit.createInventory(null, configuration.getInt("Size"), configuration.getString("Title"));
+            Inventory i = Bukkit.createInventory(null, configuration.getInt("Size"), StringUtil.limitCharacters(configuration.getString("Title"), 32));
             ConfigurationSection contents = configuration.getConfigurationSection("Contents");
             for (String index : contents.getKeys(false)) {
                 i.setItem(Integer.parseInt(index), contents.getItemStack(index));
