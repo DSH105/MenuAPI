@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class Layout extends SlotHolder {
 
-    private static final String LOAD_FAIL_MESSAGE = "Invalid Menu configuration. %s";
+    private static final String LOAD_FAIL_MESSAGE = "Invalid Menu configuration. %s. Path: %s";
 
     public Layout() {
     }
@@ -184,8 +184,8 @@ public class Layout extends SlotHolder {
             return null;
         }
 
-        Validate.notNull(section.get("slots"), String.format(LOAD_FAIL_MESSAGE, "Inventory size not found!"));
-        Validate.notNull(section.get("title"), String.format(LOAD_FAIL_MESSAGE, "Menu name not found!"));
+        Validate.notNull(section.get("slots"), String.format(LOAD_FAIL_MESSAGE, "Inventory size not found!", section.getCurrentPath()));
+        Validate.notNull(section.get("title"), String.format(LOAD_FAIL_MESSAGE, "Menu name not found!", section.getCurrentPath()));
 
         this.size = section.getInt("size", 45);
         this.title = ChatColor.translateAlternateColorCodes('&', section.getString("title", "Menu"));
@@ -197,16 +197,18 @@ public class Layout extends SlotHolder {
 
         ConfigurationSection slotsSection = section.getConfigurationSection("slots");
         for (int i = 1; i <= getSize(); i++) { // Account for people who don't know about '0' being the first. Use '1' instead
-            Icon icon;
-            ItemStack iconStack = this.loadItem(slotsSection, "slot-" + i + ".");
-            if (slotsSection.get("slot-" + i + ".command") != null) {
-                icon = new CommandIcon(slotsSection.getString("slot-" + i + ".command"), slotsSection.getString("slot-" + i + ".permission"), iconStack);
-                ((CommandIcon) icon).setChangeNameColours(slotsSection.getBoolean("slot-" + i + ".changeNameColours", true));
-                ((CommandIcon) icon).setPerformAsConsole(slotsSection.getBoolean("slot-" + i + ".performAsConsole", false));
-            } else {
-                icon = new Icon(this.loadItem(slotsSection, "slot-" + i + "."));
+            if (slotsSection.get("slot-" + i) != null) {
+                Icon icon;
+                ItemStack iconStack = this.loadItem(slotsSection, "slot-" + i + ".");
+                if (slotsSection.get("slot-" + i + ".command") != null) {
+                    icon = new CommandIcon(slotsSection.getString("slot-" + i + ".command"), slotsSection.getString("slot-" + i + ".permission"), iconStack);
+                    ((CommandIcon) icon).setChangeNameColours(slotsSection.getBoolean("slot-" + i + ".changeNameColours", true));
+                    ((CommandIcon) icon).setPerformAsConsole(slotsSection.getBoolean("slot-" + i + ".performAsConsole", false));
+                } else {
+                    icon = new Icon(this.loadItem(slotsSection, "slot-" + i + "."));
+                }
+                this.setSlot(i - 1, icon);
             }
-            this.setSlot(i - 1, icon);
         }
 
         return this;
@@ -238,8 +240,8 @@ public class Layout extends SlotHolder {
             return null;
         }
 
-        Validate.notNull(fromSection.get("size"), String.format(LOAD_FAIL_MESSAGE, "Inventory size not found!"));
-        Validate.notNull(fromSection.get("title"), String.format(LOAD_FAIL_MESSAGE, "Menu name not found!"));
+        Validate.notNull(fromSection.get("size"), String.format(LOAD_FAIL_MESSAGE, "Inventory size not found!", fromSection.getCurrentPath()));
+        Validate.notNull(fromSection.get("title"), String.format(LOAD_FAIL_MESSAGE, "Menu name not found!", fromSection.getCurrentPath()));
 
         this.loadFromFile(from, fromSectionName);
         this.saveToFile(to, toSectionName);
@@ -254,9 +256,9 @@ public class Layout extends SlotHolder {
         int amount = configSection.getInt(searchPrefix + "amount", 1);
         List<String> rawLore = configSection.getStringList(searchPrefix + "lore");
 
-        Validate.notNull(name, String.format(LOAD_FAIL_MESSAGE, "Click item config section located, but item name was not found!"));
-        Validate.notNull(material, String.format(LOAD_FAIL_MESSAGE, "Click item config section located, but item material was not found!"));
-        Validate.notNull(rawLore, String.format(LOAD_FAIL_MESSAGE, "Click item config section located, but item lore was not found!"));
+        Validate.notNull(name, String.format(LOAD_FAIL_MESSAGE, "Item config section located, but item name was not found!", configSection.getCurrentPath() + "." + searchPrefix));
+        Validate.notNull(material, String.format(LOAD_FAIL_MESSAGE, "Item config section located, but item material was not found!", configSection.getCurrentPath() + "." + searchPrefix));
+        Validate.notNull(rawLore, String.format(LOAD_FAIL_MESSAGE, "Item config section located, but item lore was not found!", configSection.getCurrentPath() + "." + searchPrefix));
 
         String[] loreCopy = new String[rawLore.size()];
         for (int i = 0; i < loreCopy.length; i++) {
