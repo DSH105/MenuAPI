@@ -95,7 +95,11 @@ public class Icon {
     public Icon(ItemStack itemStack) {
         this(itemStack.getType(), itemStack.getAmount(), itemStack.getDurability(), itemStack.getItemMeta().getDisplayName());
         List<String> lore = itemStack.getItemMeta().getLore();
-        this.lore = lore.toArray(new String[lore.size()]);
+        if (lore == null || lore.isEmpty()) {
+            this.lore = new String[0];
+        } else {
+            this.lore = lore.toArray(new String[lore.size()]);
+        }
     }
 
     /**
