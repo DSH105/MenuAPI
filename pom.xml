@@ -42,6 +42,12 @@
             <id>hawk-repo</id>
             <url>http://ci.hawkfalcon.com/plugin/repository/everything/</url>
         </repository>
+
+        <!-- DSH Repo -->
+        <repository>
+            <id>dsh-repo</id>
+            <url>http://repo.dsh105.com/</url>
+        </repository>
     </repositories>
 
     <!-- Dependencies -->
@@ -50,7 +56,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.7.9-R0.3-SNAPSHOT</version>
+            <version>1.7.10-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -58,7 +64,7 @@
         <dependency>
             <groupId>com.dsh105</groupId>
             <artifactId>Commodus</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.2-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -160,17 +166,36 @@
                     </execution>
                 </executions>
             </plugin>
-        </plugins>
-    </build>
 
-    <!-- JavaDoc -->
-    <reporting>
-        <plugins>
+            <!-- JavaDoc -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
-    </reporting>
+
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ftp</artifactId>
+                <version>1.0-beta-6</version>
+            </extension>
+        </extensions>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>dsh105-ftp</id>
+            <url>ftp://repo.dsh105.com/</url>
+        </repository>
+    </distributionManagement>
 
 </project>
