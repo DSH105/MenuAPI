@@ -165,7 +165,7 @@ public class CommandIcon extends Icon {
 
     /**
      * Gets whether the icon can modify the name to match whether the player viewing it can execute the command or not
-     * <p/>
+     * <p>
      * Modifies item name to either green or red, based on the above condition
      *
      * @return True if the item name can be changed
@@ -176,7 +176,7 @@ public class CommandIcon extends Icon {
 
     /**
      * Sets whether the icon can modify the name to match whether the player viewing it can execute the command or not
-     * <p/>
+     * <p>
      * Modifies item name to either green or red, based on the above condition
      *
      * @param changeNameColours True if the item name can be changed

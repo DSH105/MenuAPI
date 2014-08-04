@@ -31,7 +31,7 @@ import java.util.List;
 
 /**
  * Represents a Layout that can be used to create persistent Menus
- * <p/>
+ * <p>
  * Saving and loading from files is done using the Bukkit Config API
  */
 public class Layout extends SlotHolder {
@@ -216,7 +216,7 @@ public class Layout extends SlotHolder {
 
     /**
      * Move a saved Layout from one configuration file to another
-     * <p/>
+     * <p>
      * This does NOT delete the old data
      *
      * @param from Config file to retrieve saved data from
