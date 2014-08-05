@@ -25,7 +25,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when an {@link com.dsh105.menuapi.api.Icon} is clicked in a {@link com.dsh105.menuapi.api.Menu} by a {@link org.bukkit.entity.Player}
+ * Called when an {@link com.dsh105.menuapi.api.Icon} is clicked in a {@link com.dsh105.menuapi.api.Menu} by a {@link
+ * org.bukkit.entity.Player}
  */
 public class IconClickEvent extends Event implements Cancellable {
 
@@ -53,6 +54,7 @@ public class IconClickEvent extends Event implements Cancellable {
 
     /**
      * Gets the Icon clicked
+     *
      * @return Icon clicked
      */
     public Icon getClicked() {
@@ -61,7 +63,7 @@ public class IconClickEvent extends Event implements Cancellable {
 
     /**
      * Gets the Player viewing the Menu
-     * 
+     *
      * @return Player viewing the Menu
      */
     public Player getViewer() {

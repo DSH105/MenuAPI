@@ -24,14 +24,13 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.List;
 
 /**
  * Represents a Layout that can be used to create persistent Menus
- * <p>
+ * <p/>
  * Saving and loading from files is done using the Bukkit Config API
  */
 public class Layout extends SlotHolder {
@@ -53,7 +52,8 @@ public class Layout extends SlotHolder {
     /**
      * Construct a new Layout
      *
-     * @param size Size of the Layout
+     * @param size  Size of the Layout
+     * @param title Title of the Layout
      */
     public Layout(int size, String title) {
         this(new HashMap<Integer, Icon>(), size, title);
@@ -62,7 +62,9 @@ public class Layout extends SlotHolder {
     /**
      * Construct a new Layout
      *
-     * @param size Size of the Layout
+     * @param size      Size of the Layout
+     * @param title     Title of the Layout
+     * @param clickItem Click item to register to this Layout
      */
     public Layout(int size, String title, ItemStack clickItem) {
         this(new HashMap<Integer, Icon>(), size, title, clickItem);
@@ -216,7 +218,7 @@ public class Layout extends SlotHolder {
 
     /**
      * Move a saved Layout from one configuration file to another
-     * <p>
+     * <p/>
      * This does NOT delete the old data
      *
      * @param from Config file to retrieve saved data from

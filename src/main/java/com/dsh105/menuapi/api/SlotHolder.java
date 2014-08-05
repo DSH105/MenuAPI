@@ -92,11 +92,12 @@ public abstract class SlotHolder {
 
     /**
      * Sets the click item that opens a Menu when clicked by a player
-     * <p>
+     * <p/>
+     * See {@link org.bukkit.inventory.ItemStack#isSimilar(org.bukkit.inventory.ItemStack)} for the method used to
+     * compare
+     * itemstack similarity for menu triggers
      *
      * @param clickItem Click item to register
-     * @see {@link org.bukkit.inventory.ItemStack#isSimilar(org.bukkit.inventory.ItemStack)} for method used to compare
-     * itemstack similarity for menu triggers
      */
     public void setClickItem(ItemStack clickItem) {
         this.clickItem = clickItem;

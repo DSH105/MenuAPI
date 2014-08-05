@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  * Represents an Icon that appears in a {@link com.dsh105.menuapi.api.Menu}
- * <p>
+ * <p/>
  * Icons handle the events that occur when a certain button in an inventory is clicked
  */
 public class Icon {
@@ -232,9 +232,10 @@ public class Icon {
 
     /**
      * Gets the {@link org.bukkit.inventory.ItemStack} that represents an Icon
-     * <p>
+     * <p/>
      * Override this method to implement custom named items for certain players
      *
+     * @param viewer player viewing the menu
      * @return Type of an Icon
      */
     public ItemStack getIcon(Player viewer) {
@@ -261,7 +262,7 @@ public class Icon {
 
     /**
      * Sets the callback for an Icon
-     * <p>
+     * <p/>
      * Callbacks are executed when the icon is clicked by a player
      *
      * @param callback Callback

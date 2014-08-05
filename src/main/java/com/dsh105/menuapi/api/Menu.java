@@ -39,9 +39,9 @@ import java.util.Map;
 
 /**
  * Represents an Inventory based Menu that can be managed and shown to various players.
- * <p>
+ * <p/>
  * Click events and icon slots are handled internally by the Menu
- * <p>
+ * <p/>
  * An {@link com.dsh105.menuapi.api.Icon} represents an action to be performed when a certain item in the inventory is
  * clicked
  */
@@ -52,7 +52,7 @@ public class Menu extends SlotHolder implements InventoryHolder, Listener {
 
     /**
      * Construct a Menu with the given title and size
-     * <p>
+     * <p/>
      * Menu sizes will be automatically adjusted to accommodate a multiple of nine
      *
      * @param plugin Plugin instance
