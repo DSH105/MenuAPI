@@ -155,13 +155,19 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <minimizeJar>true</minimizeJar>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <artifactSet>
                                 <includes>
                                     <include>com.dsh105:Commodus</include>
                                 </includes>
                             </artifactSet>
+                            
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.dsh105.commodus</pattern>
+                                    <shadedPattern>com.dsh105.menuapi.libs.commodus</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
